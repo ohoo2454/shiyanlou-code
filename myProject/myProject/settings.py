@@ -25,7 +25,7 @@ SECRET_KEY = '!*3ym6^iqt7fley(x0t!_^8qa2!py%rexnm-9)y0x%1g4pjrot'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0a68e96e97f1-service.simplelab.cn']
+ALLOWED_HOSTS = ['9d8f1e8fcd47-service.simplelab.cn']
 
 
 # Application definition
@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myApp',
+    # 'myApp',
+    'myApp.apps.MyappConfig',
 ]
 
 MIDDLEWARE = [
