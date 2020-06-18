@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Title</title>
+		<style type="text/css">
+			#list li {
+				list-style-type: none;
+				width: 100px;
+				height: 50px;
+				line-height: 50px;
+				background-color: beige;
+				text-align: center;
+				float: left;
+			}
+
+			#list li.current {
+				background-color: red;
+			}
+
+			#list li a {
+				text-decoration: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="menu">
+			<ul id="list">
+				<li class="current">
+					<a href="javascript:void(0)">首页</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)">HTML</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)">CSS</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)">JavaScript</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)">关于</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)">帮助</a>
+				</li>
+			</ul>
+		</div>
+
+		<script type="text/javascript">
+			var liObjs = document.getElementById("list").getElementsByTagName("li");
+			for (var i = 0; i < liObjs.length; i++) {
+				var aObj = liObjs[i].firstElementChild;
+				aObj.onclick = function () {
+					for (var j = 0; j < liObjs.length; j++) {
+						liObjs[j].removeAttribute("class");
+					}
+					this.parentNode.className = "current";
+				};
+			}		
+		</script>
+	</body>
+</html>
