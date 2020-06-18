@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	
+	<body>
+		<script type="text/javascript">
+			var array = ["x", "c", "a", "b", "c", "b", "c"];
+
+			function clearArray() {
+				var o = {};
+				for (var i = 0; i < array.length; i++) {
+					var item = array[i];
+					if (o[item]) {
+						o[item]++;
+					} else {
+						o[item] = 1;
+					}
+				}
+				// console.log(o);
+				var tmpArray = [];
+				for (var key in o) {
+					if (o[key] == 1) {
+						tmpArray.push(key);
+						// console.log(tmpArray.indexOf(key));
+					} else {
+						if (tmpArray.indexOf(key) == -1) {
+							tmpArray.push(key);
+							// console.log(tmpArray.indexOf(key) == -1);
+						}
+						// tmpArray.push(key);
+					}
+				}
+				return tmpArray;
+			}
+			console.log(clearArray(array));
+		</script>
+	</body>
+</html>

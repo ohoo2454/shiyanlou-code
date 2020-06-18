@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			var str = "daskljahiagnaknscsjdwfanalvnahdpwod";
+
+			function max(str) {
+				var o = {};
+				for (var i = 0; i < str.length; i++) {
+					var item = str.charAt(i);
+					if (o[item]) {
+						o[item]++;
+					} else {
+						o[item] = 1;
+					}
+				}
+				var max = 0;
+				for (var key in o) {
+					if (max < o[key]) {
+						max = o[key];
+						var tmp;
+						tmp = key;
+					}
+				}
+				console.log("出现次数最多的字符是：" + tmp + "出现次数为：" + max);
+			}
+			max(str);
+		</script>
+	</body>
+</html>
