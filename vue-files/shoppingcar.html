@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>syl-vue-test</title>
+        <!-- 引入 vue.js -->
+        <script src="https://labfile.oss.aliyuncs.com/courses/1262/vue.min.js"></script>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+            .price {
+                font-size: 22px;
+                color: brown;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="app">
+            <!-- joint 为自定义的过滤器 -->
+            <p>单价<span class="price">{{price | joint}}</span></p>
+            数量：<input type="number" v-model="goodsNum">
+            <p>总价：<span class="price">{{allPrice | joint}}</span></p>
+        </div>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    goodsNum: 0,
+                    price: 199
+                },
+                computed: {
+                    allPrice: function() {
+                        return this.goodsNum * this.price
+                    }
+                },
+                filters: {
+                    joint: function(price) {
+                        return '￥' + price
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>
