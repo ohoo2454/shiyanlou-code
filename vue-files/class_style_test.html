@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>syl-vue-test</title>
+        <!-- 引入 vue.js -->
+        <script src="https://labfile.oss.aliyuncs.com/courses/1262/vue.min.js"></script>
+        <style>
+            .active {
+                color: red;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="app">
+            <p v-bind:style="{fontSize: fontSize + 'px'}" v-bind:class="{active: isActive}">你好，实验楼</p>
+            <button @click="handleClick">变大变色</button>
+        </div>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    fontSize: 20,
+                    isActive: true
+                },
+                methods: {
+                    handleClick: function() {
+                        this.fontSize += 2
+                        this.isActive = !this.isActive
+                    }
+                },
+            })
+        </script>
+    </body>
+</html>
