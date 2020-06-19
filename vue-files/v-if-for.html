@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>syl-vue-test</title>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+            a {
+                text-decoration: none;
+                color: #fff;
+            }
+            ul {
+                list-style: none;
+            }
+            nav, ul {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                background: yellowgreen;
+            }
+            nav > ul > li {
+                width: 20%;
+                height: 100%;
+                text-align: center;
+                line-height: 50px;
+            }
+            nav > ul > li:hover {
+                box-shadow: 1px 0px 10px #fff;
+            }
+            nav > ul > li > ul {
+                display: flex;
+                flex-direction: column;
+            }
+            nav > ul > li > ul > li {
+                box-shadow: 1px 0px 10px #fff;
+            }
+            nav > ul > li > a {
+                text-transform: uppercase;
+            }
+        </style>
+        <!-- 引入 vue.js -->
+        <script src="https://labfile.oss.aliyuncs.com/courses/1262/vue.min.js"></script>
+    </head>
+
+    <body>
+        <div id="app">
+            <nav>
+                <ul>
+                    <li v-for="(nav, index) in navbar" :key="index"
+                    @mouseover="currentIndex(index)" @mouseout="changeIndex">
+                        <a href="javascript:;">{{nav.name}}</a>
+                        <ul v-if="nav.child" v-show="current===index">
+                            <li v-for="item in nav.child">
+                                <a href="javascript:;">{{item}}</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    navbar: [
+                        {
+                            name: 'home',
+                            child: ['homeItem', 'homeItem']
+                        },
+                        {
+                            name: 'contact',
+                            child: ['contactItem', 'contactItem']
+                        },
+                        {
+                            name: 'about'
+                        }
+                    ],
+                    current: null
+                },
+                methods: {
+                    currentIndex: function(index) {
+                        this.current = index
+                    },
+                    changeIndex: function() {
+                        this.current = null
+                    }
+                },
+            })
+        </script>
+    </body>
+</html>
