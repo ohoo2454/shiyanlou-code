@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>syl-vue-test</title>
+        <!-- 引入 vue.js -->
+        <script src="https://labfile.oss.aliyuncs.com/courses/1262/vue.min.js"></script>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+            html, body {
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+            #app {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                margin: auto;
+                width: 400px;
+                height: 400px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="app">
+            <form class="app-form">
+                <span>name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <input type="text" v-model="username" />
+                <br />
+                <span>password:</span><input type="password" v-model="password" />
+                <br />
+                <span>sex: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <input type="radio" id="man" value="man" v-model="sex" />
+                <label for="man">man</label>
+                <input type="radio" id="woman" value="woman" v-model="sex" />
+                <label for="woman">woman</label>
+                <br />
+                <span>hobby:</span>
+                <input type="checkbox" id="game" value="game" v-model="hobby" />
+                <label for="game">game</label>
+                <input type="checkbox" id="basketball" value="basketball" v-model="hobby" />
+                <label for="basketball">basketball</label>
+                <input type="checkbox" id="study" value="study" v-model="hobby" />
+                <label for="study">study</label>
+                <br />
+                <br />
+                <p>名字：{{username}}</p>
+                <p>密码：{{password}}</p>
+                <p>性别：{{sex}}</p>
+                <p>爱好：{{hobby}}</p>
+            </form>
+        </div>
+        <script>
+            var vue = new Vue({
+                el: '#app',
+                data() {
+                    return {
+                        username: '',
+                        password: '',
+                        sex: 'man',
+                        hobby: []
+                    }
+                },
+            })
+        </script>
+    </body>
+</html>
