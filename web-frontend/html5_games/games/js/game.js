@@ -31,7 +31,7 @@ var hero = {
 var monster = {};
 var monstersCaught = 0;
 
-var keyDown = {};
+var keysDown = {};
 
 addEventListener("keydown", function (e) {
     keysDown[e.keyCode] = true;
