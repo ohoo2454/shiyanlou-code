@@ -73,4 +73,35 @@ class Nude(object):
                 self.skin_map.append(self.Skin(_id, isSkin, None, x, y))
                 if (not isSkin):
                     continue
-                    
+                check_indexes = [_id - 2,
+                                 _id - self.width - 2,
+                                 _id - self.width - 1,
+                                 _id - self.width]
+                region = -1
+                for index in check_indexes:
+                    try:
+                        self.skin_map[index]
+                    except IndexError:
+                        break
+                    if (self.skin_map[index].skin):
+                        if (self.skin_map[index].region != None and
+                                region != None and region != -1 and
+                                self.skin_map[index].region != region and
+                                self.last_from != region and
+                                self.last_to != self.skin_map[index].region):
+                            self._add_merge(region, self.skin_map[index].region)
+                        region = self.skin_map[index].region
+                if (region == -1):
+                    _skin = self.skin_map[_id - 1]._replace(region=len(self.detected_regions))
+                    self.skin_map[_id - 1] = _skin
+                    self.detected_regions.append([self.skin_map[_id - 1]])
+                elif (region != None):
+                    _skin = self.skin_map[_id - 1]._replace(region=region)
+                    self.skin_map[_id - 1] = _skin
+                    self.detected_regions[region].append(self.skin_map[_id - 1])
+        self._merge(self.detected_regions, self.merge_regions)
+        self._analyse_regions()
+        return self
+
+    def _classify_skin(self, r, g, b):
+            
