@@ -56,4 +56,41 @@ class Tree(object):
 
         parent = self.get_parent(item)
         if parent:
+            del_node = parent.left if parent.left.item == item else parent.right
+            if del_node.left is None:
+                if parent.left.item == item:
+                    parent.left = del_node.right
+                else:
+                    parent.right = del_node.right
+                del del_node
+                return True
+            elif del_node.right is None:
+                if parent.left.item == item:
+                    parent.left = del_node.left
+                else:
+                    parent.right = del_node.left
+                del del_node
+                return True
+            else:
+                tmp_pre = del_node
+                tmp_next = del_node.right
+                if tmp_next.left is None:
+                    tmp_pre.right = tmp_next.right
+                    tmp_next.left = del_node.left
+                    tmp_next.right = del_node.right
+                else:
+                    while tmp_next.left:
+                        tmp_pre = tmp_next
+                        tmp_next = tmp_next.left
+                    tmp_pre.left = tmp_next.right
+                    tmp_next.left = del_node.left
+                    tmp_next.right = del_node.right
+                if parent.left.item == item:
+                    parent.left = tmp_next
+                else:
+                    parent.right = tmp_next
+                del del_node
+                return True
+        else:
+            return False
 
