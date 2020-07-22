@@ -94,3 +94,27 @@ class Tree(object):
         else:
             return False
 
+    def inorder(self, node):
+        if node is None:
+            return []
+        result = [node.item]
+        left_item = self.inorder(node.left)
+        right_item = self.inorder(node.right)
+        return left_item + result + right_item
+
+    def postorder(self, node):
+        if node is None:
+            return []
+        result = [node.item]
+        left_item = self.postorder(node.left)
+        right_item = self.postorder(node.right)
+        return left_item + right_item + result
+
+    def preorder(self, node):
+        if node is None:
+            return []
+        result = [node.item]
+        left_item = self.preorder(node.left)
+        right_item = self.preorder(node.right)
+        return result + left_item + right_item
+
