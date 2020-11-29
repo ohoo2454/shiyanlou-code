@@ -1,0 +1,2 @@
+java|1000|a week|alex
+python|1000|a month|egon
