@@ -83,6 +83,8 @@ class Customer(models.Model):
     """
     客户模型类
     """
+    MAX_PRIVATE_CUSTOMER_COUNT = 150
+
     name = models.CharField(verbose_name='姓名', max_length=32)
     qq = models.CharField(verbose_name='联系方式', max_length=64, unique=True, 
             help_text='QQ/微信/手机')
@@ -173,3 +175,76 @@ class Customer(models.Model):
 
     def __str__(self):
         return '姓名：{0}，联系方式：{1}'.format(self.name, self.qq)
+
+
+# 客户跟进记录模型类
+class ConsultRecord(models.Model):
+    """
+    客户跟进记录模型类
+    """
+    customer = models.ForeignKey(verbose_name='所咨询客户', to='Customer')
+    consultant = models.ForeignKey(verbose_name='跟进人', to='UserInfo')
+    note = models.TextField(verbose_name='跟进内容')
+    date = models.DateField(verbose_name='跟进日期', auto_now_add=True)
+
+
+# 缴费申请模型类
+class PaymentRecord(models.Model):
+    """
+    缴费申请模型类
+    """
+    customer = models.ForeignKey(verbose_name='客户', to='Customer')
+    consultant = models.ForeignKey(verbose_name='课程顾问', to='UserInfo', 
+            help_text='谁签的单就选谁')
+    pay_type_choices = [
+        (1, "报名费"),
+        (2, "学费"),
+        (3, "退学"),
+        (4, "其他"),
+    ]
+    pay_type = models.SmallIntegerField(verbose_name='费用类型', 
+            choices=pay_type_choices, default=1)
+    paid_fee = models.PositiveIntegerField(verbose_name='金额', default=0)
+    class_list = models.ForeignKey(verbose_name='分配班级', to='ClassList', 
+            null=True, blank=True)
+    apply_date = models.DateField(verbose_name='申请日期', auto_now_add=True)
+    confirm_status_choices = [
+        (1, '申请中'),
+        (2, '已确认'),
+        (3, '已驳回'),
+    ]
+    confirm_status = models.SmallIntegerField(verbose_name='确认状态', 
+            choices=confirm_status_choices, default=1)
+    confirm_date = models.DateField(verbose_name='确认日期', 
+            null=True, blank=True)
+    confirm_user = models.ForeignKey(verbose_name='审批人', to='UserInfo', 
+            related_name='confirms', null=True, blank=True)
+    note = models.TextField(verbose_name='备注', null=True, blank=True)
+    
+
+# 学生模型类
+class Student(models.Model):
+    """
+    学生模型类
+    """
+    customer = models.OneToOneField(verbose_name='客户信息', to='Customer')
+    qq = models.CharField(verbose_name='QQ号', max_length=32)
+    mobile = models.CharField(verbose_name='手机号', max_length=32)
+    emergency_contract = models.CharField(verbose_name='紧急联系人电话', 
+            max_length=32)
+    class_list = models.ManyToManyField(verbose_name='已报班级', 
+            to='ClassList', null=True, blank=True)
+    student_status_choices = [
+        (1, "申请中"),
+        (2, "在读"),
+        (3, "毕业"),
+        (4, "退学")
+    ]
+    student_status = models.SmallIntegerField(verbose_name='学员状态', 
+            choices=student_status_choices, default=1)
+    memo = models.TextField(verbose_name='备注', max_length=255, 
+            null=True, blank=True)
+    
+    def __str__(self):
+        return self.customer.name
+        

@@ -248,14 +248,18 @@ class StarkHandler(object):
     """
     视图函数处理基类
     """
-    display_list = []        # 自定义页面显示列
-    per_page_count = 10      # 每页显示条目数量
-    has_add_btn = True       # 页面是否显示添加按钮
-    model_form_class = None  # 页面表单模型
-    order_list = []          # 排序关键字列表
-    search_list = []         # 搜索关键词列表
-    action_list = []         # 可批量操作功能列表
-    search_group = []        # 组合搜索关键词列表
+    display_list = []          # 自定义页面显示列
+    per_page_count = 10        # 每页显示条目数量
+    has_add_btn = True         # 页面是否显示添加按钮
+    model_form_class = None    # 页面表单模型
+    order_list = []            # 排序关键字列表
+    search_list = []           # 搜索关键词列表
+    action_list = []           # 可批量操作功能列表
+    search_group = []          # 组合搜索关键词列表
+    list_template = None       # 列表视图对应HTML模板
+    add_template = None        # 添加视图对应HTML模板
+    edit_template = None       # 编辑视图对应HTML模板
+    del_template = None        # 删除视图对应HTML模板
 
     def __init__(self, site, model_class, prev):
         self.site = site
@@ -272,20 +276,19 @@ class StarkHandler(object):
         """
         value = []
         value.extend(self.display_list)
-        value.append(StarkHandler.display_edit_del)
+        value.append(type(self).display_edit_del)
         return value
     
     # 生成添加按钮
-    def get_add_btn(self):
+    def get_add_btn(self, request, *args, **kwargs):
         """
         生成添加按钮
         :return:
         """
         if self.has_add_btn:
             return '<a class="btn btn-primary" href="%s">添加</a>' % \
-                    self.reverse_add_url()
-        else:
-            return None
+                    self.reverse_add_url(*args, **kwargs)
+        return None
 
     # 获取页面表单模型
     def get_model_form_class(self, is_add=False):
@@ -392,7 +395,7 @@ class StarkHandler(object):
                 obj.pk)
     
     # 页面显示编辑图标
-    def display_edit(self, obj=None, is_header=None):
+    def display_edit(self, obj=None, is_header=None, *args, **kwargs):
         """
         自定义页面显示的编辑列（表头和内容）
         :param obj:
@@ -405,7 +408,7 @@ class StarkHandler(object):
                 pk=obj.pk))
     
     # 页面显示删除图标
-    def display_del(self, obj=None, is_header=None):
+    def display_del(self, obj=None, is_header=None, *args, **kwargs):
         """
         自定义页面显示的删除列（表头和内容）
         :param obj:
@@ -418,7 +421,7 @@ class StarkHandler(object):
                 pk=obj.pk))
 
     # 页面显示编辑和删除图标
-    def display_edit_del(self, obj=None, is_header=None):
+    def display_edit_del(self, obj=None, is_header=None, *args, **kwargs):
         """
         自定义页面显示的删除列（表头和内容）
         :param obj:
@@ -487,7 +490,8 @@ class StarkHandler(object):
         if display_list:
             for key_or_func in display_list:
                 if isinstance(key_or_func, FunctionType):
-                    verbose_name = key_or_func(self, obj=None, is_header=True)
+                    verbose_name = key_or_func(self, obj=None, is_header=True, 
+                            *args, **kwargs)
                 else:
                     tmp_field = self.model_class._meta.get_field(key_or_func)
                     verbose_name = tmp_field.verbose_name
@@ -502,8 +506,8 @@ class StarkHandler(object):
             if display_list:
                 for key_or_func in display_list:
                     if isinstance(key_or_func, FunctionType):
-                        tr_list.append(key_or_func(self, obj=row, 
-                                is_header=False))
+                        tr_list.append(key_or_func(self, row, False, 
+                                *args, **kwargs))
                     else:
                         tr_list.append(getattr(row, key_or_func))
             else:
@@ -511,7 +515,7 @@ class StarkHandler(object):
             body_list.append(tr_list)
 
         # 生成添加按钮
-        add_btn = self.get_add_btn()
+        add_btn = self.get_add_btn(request, *args, **kwargs)
 
         # 处理组合搜索
         search_group_row_list = []
@@ -523,7 +527,7 @@ class StarkHandler(object):
 
         return render(
             request, 
-            'stark/list.html', 
+            self.list_template or 'stark/list.html', 
             {
                 'data_list': data_list,
                 'header_list': header_list,
@@ -538,16 +542,19 @@ class StarkHandler(object):
         )
 
     # 在使用ModelForm保存数据之前预留的钩子方法
-    def save(self, form, is_update=False):
+    def save(self, request, form, is_update, *args, **kwargs):
         """
         在使用ModelForm保存数据之前预留的钩子方法
         :param form: 表单
         :param is_update: 是否更新
+        :args:
+        :kwargs:
+        :return:
         """
         form.save()
 
     # 添加数据页面
-    def add_view(self, request):
+    def add_view(self, request, *args, **kwargs):
         """
         添加数据页面
         :param request:
@@ -556,48 +563,76 @@ class StarkHandler(object):
         model_form_class = self.get_model_form_class(is_add=True)
         if request.method == 'GET':
             form = model_form_class()
-            return render(request, 'stark/edit.html', {'form': form})
+            return render(request, self.add_template or 'stark/edit.html', 
+                    {'form': form})
         form = model_form_class(data=request.POST)
         if form.is_valid():
-            self.save(form, is_update=False)
-            return redirect(self.reverse_list_url())
-        return render(request, 'stark/edit.html', {'form': form})
+            response = self.save(request, form, False, *args, **kwargs)
+            return response or redirect(self.reverse_list_url(*args, **kwargs))
+        return render(request, self.add_template or 'stark/edit.html', 
+                {'form': form})
 
+    # 获取要编辑的对象
+    def get_edit_obj(self, request, pk, *args, **kwargs):
+        """
+        获取要编辑的对象
+        :param request:
+        :param pk:
+        :parma args:
+        :param kwargs:
+        :return:
+        """
+        return self.model_class.objects.filter(id=pk).first()
+    
     # 编辑数据页面
-    def edit_view(self, request, pk):
+    def edit_view(self, request, pk, *args, **kwargs):
         """
         编辑数据页面
         :param request:
         :param pk: 需要编辑数据的id
         :return:
         """
-        current_edit_obj = self.model_class.objects.filter(id=pk).first()
+        current_edit_obj = self.get_edit_obj(request, pk, *args, **kwargs)
         if not current_edit_obj:
             return HttpResponse('要编辑的数据不存在')
         model_form_class = self.get_model_form_class(is_add=False)
         if request.method == 'GET':
             form = model_form_class(instance=current_edit_obj)
-            return render(request, 'stark/edit.html', {'form': form})
+            return render(request, self.edit_template or 'stark/edit.html', 
+                    {'form': form})
         form = model_form_class(instance=current_edit_obj, data=request.POST)
         if form.is_valid():
-            self.save(form, is_update=False)
-            return redirect(self.reverse_list_url())
-        return render(request, 'stark/edit.html', {'form': form})
+            response = self.save(request, form, True, *args, **kwargs)
+            return response or redirect(self.reverse_list_url(*args, **kwargs))
+        return render(request, self.edit_template or 'stark/edit.html', 
+                {'form': form})
 
+    # 删除对象
+    def del_obj(self, request, pk, *args, **kwargs):
+        """
+        删除对象
+        :param request:
+        :param pk:
+        :parma args:
+        :param kwargs:
+        :return:
+        """
+        self.model_class.objects.filter(id=pk).delete()
+    
     # 删除数据页面
-    def del_view(self, request, pk):
+    def del_view(self, request, pk, *args, **kwargs):
         """
         删除数据页面
         :param request:
         :param pk: 需要删除数据的id
         :return:
         """
-        origin_list_url = self.reverse_list_url()
+        origin_list_url = self.reverse_list_url(*args, **kwargs)
         if request.method == 'GET':
-            return render(request, 'stark/delete.html', 
+            return render(request, self.del_template or 'stark/delete.html', 
                     {'cancel': origin_list_url})
-        self.model_class.objects.filter(id=pk).delete()
-        return redirect(origin_list_url)
+        response = self.del_obj(request, pk, *args, **kwargs)
+        return response or redirect(origin_list_url)
 
     # 动态生成url别名
     def get_url_name(self, param):
@@ -665,12 +700,12 @@ class StarkHandler(object):
         return common_url
 
     # 反向解析生成带有原搜索条件列表页面url
-    def reverse_list_url(self):
+    def reverse_list_url(self, *args, **kwargs):
         """
         反向解析生成带有原搜索条件列表页面url
         """
         name = '%s:%s' % (self.site.namespace, self.get_list_url_name)
-        base_url = reverse(name)
+        base_url = reverse(name, args=args, kwargs=kwargs)
         param = self.request.GET.get('_filter')
         if not param:
             return base_url
