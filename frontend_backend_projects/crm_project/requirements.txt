@@ -10,7 +10,7 @@ pickleshare==0.7.5
 pkg-resources==0.0.0
 prompt-toolkit==2.0.10
 ptyprocess==0.6.0
-Pygments==2.7.3
+Pygments==2.7.4
 PyMySQL==0.10.1
 pytz==2020.4
 six==1.15.0
