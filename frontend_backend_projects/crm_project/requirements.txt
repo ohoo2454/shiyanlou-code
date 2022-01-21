@@ -1,7 +1,7 @@
 backcall==0.2.0
 decorator==4.4.2
 Django==1.11.21
-ipython==7.9.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 jedi==0.17.2
 parso==0.7.1
