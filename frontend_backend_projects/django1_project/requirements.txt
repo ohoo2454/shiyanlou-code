@@ -4,7 +4,7 @@ chardet==4.0.0
 decorator==4.4.2
 Django==1.11.21
 djangorestframework==3.6.3
-httpie==2.0.0
+httpie==3.1.0
 idna==2.10
 ipython==7.9.0
 ipython-genutils==0.2.0
